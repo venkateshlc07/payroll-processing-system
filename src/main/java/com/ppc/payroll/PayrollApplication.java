@@ -28,6 +28,8 @@ public class PayrollApplication {
 			employee.stream().forEach(emp -> System.out.println(emp.toString()));
 		}
 
+		System.out.println(browser.computeSalaryReport());
+
 
 
 		/*

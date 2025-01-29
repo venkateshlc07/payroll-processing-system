@@ -15,4 +15,5 @@ public interface EmployeeRepository {
     Map<Month, List<Event>> findEmployeesExited();
     Employee findEmployeeById(String userId);
     List<Employee> findAllEmployees();
+    Map<Month, List<Event>> computeSalaryReport();
 }

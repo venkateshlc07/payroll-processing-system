@@ -59,6 +59,29 @@ public class EmployeeBrowser {
 
         return res;
     }
+
+    public Map<String, EmployeeSalarySummary> computeSalaryReport(){
+        Map<Month, List<Event>> computeSalaryReport =
+                employeeRepository.computeSalaryReport();
+
+        Map<String, EmployeeSalarySummary> monthListHashMap = new HashMap<>();
+
+        for(Map.Entry<Month, List<Event>> entry : computeSalaryReport.entrySet()){
+            Month month = entry.getKey();
+            List<Event> events = entry.getValue();
+
+            long emploeesCnt = events.size();
+
+            long computedSalary  = events.stream().mapToInt(event -> event.getSalary()).sum();
+
+            EmployeeSalarySummary summary = new EmployeeSalarySummary(computedSalary, emploeesCnt);
+            monthListHashMap.put(month.name(), summary);
+
+        }
+
+        return monthListHashMap;
+
+    }
 }
 
 

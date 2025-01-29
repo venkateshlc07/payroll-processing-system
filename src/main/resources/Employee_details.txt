@@ -2,5 +2,6 @@
 2, emp102, Steve, Jobs, Architect, ONBOARD, 1-10-2022, 10-10-2022, “Steve Jobs joined DataOrb on 1st October as an Architect.”
 3, emp103, Martin, Fowler, Software Engineer, ONBOARD, 12-10-2022, 10-10-2022, “Martin has joined DataOrb as a SE.”
 4, emp102, SALARY, 3000, 10-10-2022, “Oct Salary of Steve.”
-5, emp102, EXIT, 10-10-2022, 10-10-2022, “Steve Left”
-6, emp101, EXIT, 11-11-2022, 11-11-2022, “Bill Left”
+5, emp101, SALARY, 4000, 11-11-2022, “Oct Salary of Bill.”
+6, emp102, EXIT, 10-10-2022, 10-10-2022, “Steve Left”
+7, emp101, EXIT, 11-11-2022, 11-11-2022, “Bill Left”

@@ -152,6 +152,15 @@ public class EmployeeDB implements EmployeeRepository {
         return employees;
     }
 
+    @Override
+    public Map<Month, List<Event>> computeSalaryReport() {
+        Map<Month, List<Event>> res = events.stream()
+                .filter(emp -> emp.getEvent().equals(eventType.SALARY))
+                .collect(Collectors.groupingBy(event -> event.getEventDate().getMonth()));
+
+        return res;
+    }
+
     public Employee findEmployeeById(String empId){
         for(Employee emp: employees){
             if(emp.getEmpId().equals(empId))
