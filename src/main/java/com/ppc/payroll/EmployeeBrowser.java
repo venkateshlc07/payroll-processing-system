@@ -107,6 +107,35 @@ public class EmployeeBrowser {
         return res;
 
     }
+
+    public long employeeCount(){
+        return employeeRepository.employeeCount();
+    }
+
+    public  Map<String, EmployeeSalarySummary> amountExpenditure(){
+        Map<Month, List<Event>> amountExpenditure = employeeRepository.amountExpenditure();
+
+        Map<String, EmployeeSalarySummary> res = new HashMap<>();
+
+        for(Map.Entry<Month, List<Event>> entry : amountExpenditure.entrySet()){
+            Month month = entry.getKey();
+            List<Event> events = entry.getValue();
+
+            long computedSalary  = events.stream().
+                    mapToLong(event -> event.getSalary() + event.getReimbursement() + event.getBonus())
+                    .sum();
+
+
+            EmployeeSalarySummary salarySummary = new EmployeeSalarySummary(computedSalary, events.size());
+
+            res.put(month.name(), salarySummary);
+
+        }
+
+        return res;
+
+    }
+
 }
 
 

@@ -30,8 +30,9 @@ public class PayrollApplication {
 
 		//System.out.println(browser.computeSalaryReport());
 
-		System.out.println(browser.financialReport());
+		//System.out.println(browser.financialReport());
 
+		System.out.println(browser.amountExpenditure());
 		/*
 		System.out.println(dbRepository.employeeCount());
 		//dbRepository.print();
