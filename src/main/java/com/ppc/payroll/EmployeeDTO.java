@@ -11,6 +11,18 @@ public class EmployeeDTO {
         this.lName = lName;
     }
 
+    public String getEmpId() {
+        return empId;
+    }
+
+    public String getfName() {
+        return fName;
+    }
+
+    public String getlName() {
+        return lName;
+    }
+
     @Override
     public String toString() {
         return "EmployeeDTO{" +

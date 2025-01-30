@@ -24,13 +24,13 @@ public class PayrollApplication {
 
 		for(String k : emps.keySet()){
 			List<EmployeeDTO> employee = emps.get(k);
-			System.out.println(k);
-			employee.stream().forEach(emp -> System.out.println(emp.toString()));
+			//System.out.println(k);
+			//employee.stream().forEach(emp -> System.out.println(emp.toString()));
 		}
 
-		System.out.println(browser.computeSalaryReport());
+		//System.out.println(browser.computeSalaryReport());
 
-
+		System.out.println(browser.financialReport());
 
 		/*
 		System.out.println(dbRepository.employeeCount());

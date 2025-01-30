@@ -82,6 +82,31 @@ public class EmployeeBrowser {
         return monthListHashMap;
 
     }
+
+    public List<EmployeeFinancialReport> financialReport(){
+        Map<String, List<Event>> financialReport = employeeRepository.financialReport();
+
+        List<EmployeeFinancialReport> res = new ArrayList<>();
+
+        for(Map.Entry<String, List<Event>> entry : financialReport.entrySet()){
+            String empId = entry.getKey();
+            List<Event> events = entry.getValue();
+
+            long computedSalary  = events.stream().mapToInt(event -> event.getSalary()).sum();
+
+            Employee emp = employeeRepository.findEmployeeById(empId);
+            EmployeeDTO employeeDTO = new EmployeeDTO(emp.getEmpId(), emp.getfName(), emp.getlName());
+
+            EmployeeFinancialReport employeeFinancialReport = new EmployeeFinancialReport(employeeDTO);
+            employeeFinancialReport.setTotalAmountPaid(computedSalary);
+
+            res.add(employeeFinancialReport);
+
+        }
+
+        return res;
+
+    }
 }
 
 
