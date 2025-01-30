@@ -1,6 +1,7 @@
 package com.ppc.payroll;
 
 import com.ppc.payroll.repository.EmployeeRepository;
+import com.ppc.payroll.utils.GroupBy;
 
 import java.time.Month;
 import java.util.ArrayList;
@@ -15,50 +16,6 @@ public class EmployeeBrowser {
         this.employeeRepository = employeeRepository;
     }
 
-    public Map<String, List<EmployeeDTO>> findEmployeesJoined() {
-        Map<Month, List<Event>> employeesJoined = employeeRepository.findEmployeesJoined();
-        List<Employee> employees = employeeRepository.findAllEmployees();
-
-        Map<String, List<EmployeeDTO>> res = new HashMap<>();
-        for (Map.Entry<Month, List<Event>> entry : employeesJoined.entrySet()) {
-            Month month = entry.getKey();
-            List<Event> events = entry.getValue();
-            List<EmployeeDTO> employeeDTOS = new ArrayList<>();
-
-            for (Event event : events) {
-                Employee emp = employeeRepository.findEmployeeById(event.getEmpId());
-                employeeDTOS.add(new EmployeeDTO(emp.getEmpId(),
-                        emp.getfName(), emp.getlName()));
-            }
-
-            res.put(month.name(), employeeDTOS);
-        }
-
-        return res;
-    }
-
-    public Map<String, List<EmployeeDTO>> findEmployeesExited() {
-
-        Map<Month, List<Event>> employeesExited = employeeRepository.findEmployeesExited();
-        List<Employee> employees = employeeRepository.findAllEmployees();
-
-        Map<String, List<EmployeeDTO>> res = new HashMap<>();
-        for (Map.Entry<Month, List<Event>> entry : employeesExited.entrySet()) {
-            Month month = entry.getKey();
-            List<Event> events = entry.getValue();
-            List<EmployeeDTO> employeeDTOS = new ArrayList<>();
-
-            for (Event event : events) {
-                Employee emp = employeeRepository.findEmployeeById(event.getEmpId());
-                employeeDTOS.add(new EmployeeDTO(emp.getEmpId(),
-                        emp.getfName(), emp.getlName()));
-            }
-
-            res.put(month.name(), employeeDTOS);
-        }
-
-        return res;
-    }
 
     public Map<String, EmployeeSalarySummary> computeSalaryReport(){
         Map<Month, List<Event>> computeSalaryReport =
@@ -134,6 +91,27 @@ public class EmployeeBrowser {
 
         return res;
 
+    }
+
+    public Map<String, List<EmployeeDTO>> findEmployeesBy(eventType event, GroupBy groupBy){
+        Map<String, List<Event>> employeesBy = employeeRepository.findEmployeesBy(event, groupBy);
+
+        Map<String, List<EmployeeDTO>> res = new HashMap<>();
+        for (Map.Entry<String, List<Event>> entry : employeesBy.entrySet()) {
+            String month = entry.getKey();
+            List<Event> events = entry.getValue();
+            List<EmployeeDTO> employeeDTOS = new ArrayList<>();
+
+            for (Event e : events) {
+                Employee emp = employeeRepository.findEmployeeById(e.getEmpId());
+                employeeDTOS.add(new EmployeeDTO(emp.getEmpId(),
+                        emp.getfName(), emp.getlName()));
+            }
+
+            res.put(month, employeeDTOS);
+        }
+
+        return res;
     }
 
 }

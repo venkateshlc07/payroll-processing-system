@@ -1,6 +1,7 @@
 package com.ppc.payroll;
 
 import com.ppc.payroll.repository.EmployeeRepository;
+import com.ppc.payroll.utils.GroupBy;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -129,22 +130,17 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
-    public Map<Month, List<Event>> findEmployeesJoined() {
-       // System.out.println(events);
-        Map<Month, List<Event>> res = events.stream()
-                         .filter(emp -> emp.getEvent().equals(eventType.ONBOARD))
-                        .collect(Collectors.groupingBy(event -> event.getDoj().getMonth()));
+    public Map<String, List<Event>> findEmployeesBy(eventType event, GroupBy groupBy) {
+        return events.stream()
+                .filter(ev -> ev.getEvent().equals(event))
+                .collect(Collectors.groupingBy(e -> {
+                    if (groupBy == GroupBy.MONTH) {
+                        return e.getEvent() == eventType.ONBOARD ? e.getDoj().getMonth().toString() : e.getDol().getMonth().toString();
+                    } else {
+                        return e.getEvent() == eventType.ONBOARD ? String.valueOf(e.getDoj().getYear()) : String.valueOf(e.getDol().getYear());
+                    }
+                }));
 
-        return res;
-    }
-
-    @Override
-    public Map<Month, List<Event>>  findEmployeesExited() {
-        Map<Month, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(eventType.EXIT))
-                .collect(Collectors.groupingBy(event -> event.getDol().getMonth()));
-
-        return res;
     }
 
     @Override
@@ -205,6 +201,7 @@ public class EmployeeDB implements EmployeeRepository {
     public long employeesCount(){
        return employees.stream().count();
     }
+
     @Override
     public void print(){
        System.out.println(employees);
