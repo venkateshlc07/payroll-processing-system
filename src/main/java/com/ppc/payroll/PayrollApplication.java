@@ -1,11 +1,13 @@
 package com.ppc.payroll;
 
 import com.ppc.payroll.repository.EmployeeRepository;
-import com.ppc.payroll.utils.GroupBy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import static com.ppc.payroll.utils.EmployeeGroupBy.EMPID;
+import static com.ppc.payroll.utils.GroupBy.MONTH;
 
 
 public class PayrollApplication {
@@ -21,6 +23,9 @@ public class PayrollApplication {
 		payrollFormat.process(records);
 
 		EmployeeBrowser browser = new EmployeeBrowser(dbRepository);
+		Map<String, EmployeeSalarySummary> computeSalaryReport = browser.findTotalSalaryBy(Set.of(EventType.SALARY), MONTH);
+
+		System.out.println(computeSalaryReport);
 
 	}
 

@@ -1,6 +1,6 @@
 package com.ppc.payroll;
 
-public enum eventType {
+public enum EventType {
     ONBOARD,
     SALARY,
     BONUS,

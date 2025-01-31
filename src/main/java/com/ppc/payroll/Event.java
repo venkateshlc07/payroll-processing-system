@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public class Event {
     private String empId;
-    private eventType event;
+    private EventType event;
     private LocalDate doj;
     private int salary;
     private int bonus;
@@ -20,11 +20,11 @@ public class Event {
         this.empId = empId;
     }
 
-    public eventType getEvent() {
+    public EventType getEvent() {
         return event;
     }
 
-    public void setEvent(eventType event) {
+    public void setEvent(EventType event) {
         this.event = event;
     }
 

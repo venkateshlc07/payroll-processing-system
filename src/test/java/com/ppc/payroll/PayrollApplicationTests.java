@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.ppc.payroll.eventType.EXIT;
-import static com.ppc.payroll.eventType.ONBOARD;
+import static com.ppc.payroll.EventType.EXIT;
+import static com.ppc.payroll.EventType.ONBOARD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -43,7 +43,7 @@ class PayrollApplicationTests {
 		List<Event> events = new ArrayList<>();
 		Event event = new Event();
 		event.setEmpId("E123");
-		event.setEvent(eventType.ONBOARD);
+		event.setEvent(ONBOARD);
 		event.setDoj(LocalDate.of(2024, Month.JANUARY, 10));
 		events.add(event);
 		mockJoinedMap.put(event.getDoj().getMonth().toString(), events);

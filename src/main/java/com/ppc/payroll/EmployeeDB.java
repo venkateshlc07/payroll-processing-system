@@ -1,10 +1,12 @@
 package com.ppc.payroll;
 
 import com.ppc.payroll.repository.EmployeeRepository;
+import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,8 +34,8 @@ public class EmployeeDB implements EmployeeRepository {
             employee.setDesignation(record[4].trim());
 
             event.setEmpId(record[1].trim());
-            if (record[5].trim().equals(eventType.ONBOARD.toString())) {
-                event.setEvent(eventType.ONBOARD);
+            if (record[5].trim().equals(EventType.ONBOARD.toString())) {
+                event.setEvent(EventType.ONBOARD);
                 String[] date = record[6].trim().split("-");
 
                 event.setDoj(LocalDate.of(
@@ -42,14 +44,14 @@ public class EmployeeDB implements EmployeeRepository {
                         Integer.parseInt(date[1])  // Day
                 ));
 
-            } else if (record[5].trim().equals(eventType.BONUS.toString())) {
-                event.setEvent(eventType.BONUS);
+            } else if (record[5].trim().equals(EventType.BONUS.toString())) {
+                event.setEvent(EventType.BONUS);
                 event.setBonus(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(eventType.REIMBURSEMENT.toString())) {
-                event.setEvent(eventType.REIMBURSEMENT);
+            } else if (record[5].trim().equals(EventType.REIMBURSEMENT.toString())) {
+                event.setEvent(EventType.REIMBURSEMENT);
                 event.setReimbursement(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(eventType.EXIT.toString())) {
-                event.setEvent(eventType.EXIT);
+            } else if (record[5].trim().equals(EventType.EXIT.toString())) {
+                event.setEvent(EventType.EXIT);
                 String[] date = record[6].trim().split("-");
 
                 event.setDol(LocalDate.of(
@@ -58,11 +60,11 @@ public class EmployeeDB implements EmployeeRepository {
                         Integer.parseInt(date[1])  // Day
                 ));
 
-            } else if (record[5].trim().equals(eventType.BONUS.toString())) {
-                event.setEvent(eventType.BONUS);
+            } else if (record[5].trim().equals(EventType.BONUS.toString())) {
+                event.setEvent(EventType.BONUS);
                 event.setBonus(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(eventType.SALARY.toString())) {
-                event.setEvent(eventType.SALARY);
+            } else if (record[5].trim().equals(EventType.SALARY.toString())) {
+                event.setEvent(EventType.SALARY);
                 event.setSalary(Integer.parseInt(record[6].trim()));
             }
             String[] date = record[7].trim().split("-");
@@ -79,8 +81,8 @@ public class EmployeeDB implements EmployeeRepository {
 
         }else {
             event.setEmpId(record[1].trim());
-            if (record[2].trim().equals(eventType.ONBOARD.toString())) {
-                event.setEvent(eventType.ONBOARD);
+            if (record[2].trim().equals(EventType.ONBOARD.toString())) {
+                event.setEvent(EventType.ONBOARD);
                 String[] date = record[3].trim().split("-");
 
                 event.setDoj(LocalDate.of(
@@ -89,11 +91,11 @@ public class EmployeeDB implements EmployeeRepository {
                         Integer.parseInt(date[1])  // Day
                 ));
 
-            } else if (record[2].trim().equals(eventType.REIMBURSEMENT.toString())) {
-                event.setEvent(eventType.REIMBURSEMENT);
+            } else if (record[2].trim().equals(EventType.REIMBURSEMENT.toString())) {
+                event.setEvent(EventType.REIMBURSEMENT);
                 event.setReimbursement(Integer.parseInt(record[3].trim()));
-            } else if (record[2].trim().equals(eventType.EXIT.toString())) {
-                event.setEvent(eventType.EXIT);
+            } else if (record[2].trim().equals(EventType.EXIT.toString())) {
+                event.setEvent(EventType.EXIT);
                 String[] date = record[3].trim().split("-");
 
                 event.setDol(LocalDate.of(
@@ -102,11 +104,11 @@ public class EmployeeDB implements EmployeeRepository {
                         Integer.parseInt(date[1])  // Day
                 ));
 
-            } else if (record[2].trim().equals(eventType.BONUS.toString())) {
-                event.setEvent(eventType.BONUS);
+            } else if (record[2].trim().equals(EventType.BONUS.toString())) {
+                event.setEvent(EventType.BONUS);
                 event.setBonus(Integer.parseInt(record[3].trim()));
-            } else if (record[2].trim().equals(eventType.SALARY.toString())) {
-                event.setEvent(eventType.SALARY);
+            } else if (record[2].trim().equals(EventType.SALARY.toString())) {
+                event.setEvent(EventType.SALARY);
                 event.setSalary(Integer.parseInt(record[3].trim()));
             }
             String[] date = record[4].trim().split("-");
@@ -130,14 +132,14 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
-    public Map<String, List<Event>> findEmployeesBy(eventType event, GroupBy groupBy) {
+    public Map<String, List<Event>> findEmployeesBy(EventType event, GroupBy groupBy) {
         return events.stream()
                 .filter(ev -> ev.getEvent().equals(event))
                 .collect(Collectors.groupingBy(e -> {
                     if (groupBy == GroupBy.MONTH) {
-                        return e.getEvent() == eventType.ONBOARD ? e.getDoj().getMonth().toString() : e.getDol().getMonth().toString();
+                        return e.getEvent() == EventType.ONBOARD ? e.getDoj().getMonth().toString() : e.getDol().getMonth().toString();
                     } else {
-                        return e.getEvent() == eventType.ONBOARD ? String.valueOf(e.getDoj().getYear()) : String.valueOf(e.getDol().getYear());
+                        return e.getEvent() == EventType.ONBOARD ? String.valueOf(e.getDoj().getYear()) : String.valueOf(e.getDol().getYear());
                     }
                 }));
 
@@ -151,8 +153,27 @@ public class EmployeeDB implements EmployeeRepository {
     @Override
     public Map<Month, List<Event>> computeSalaryReport() {
         Map<Month, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(eventType.SALARY))
+                .filter(emp -> emp.getEvent().equals(EventType.SALARY))
                 .collect(Collectors.groupingBy(event -> event.getEventDate().getMonth()));
+
+        return res;
+    }
+
+    @Override
+    public Map<String, List<Event>> findTotalSalaryBy(Set<EventType> eventType, GroupBy groupBy) {
+
+        Map<String, List<Event>> res = events.stream()
+                .filter(event -> eventType.contains(event.getEvent()))
+                .collect(Collectors.groupingBy(
+                        event -> {
+                            if(groupBy == GroupBy.MONTH){
+                                return event.getEventDate().getYear() + "-" + event.getEventDate().getMonth().toString();
+                            }
+                            else{
+                                return String.valueOf(event.getEventDate().getYear());
+                            }
+                        }
+                ));
 
         return res;
     }
@@ -160,7 +181,7 @@ public class EmployeeDB implements EmployeeRepository {
     @Override
     public Map<String, List<Event>> financialReport() {
         Map<String, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(eventType.SALARY))
+                .filter(emp -> emp.getEvent().equals(EventType.SALARY))
                 .collect(Collectors.groupingBy(event -> event.getEmpId()));
 
         return res;
@@ -168,16 +189,39 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
+    public Map<String, List<Event>> findTotalSalaryBy(Set<EventType> eventType, EmployeeGroupBy employeeGroupBy) {
+        Map<String, List<Event>> res = events.stream()
+                .filter(event -> eventType.contains(event.getEvent()))
+                .collect(Collectors.groupingBy(event -> {
+                    if(employeeGroupBy == EmployeeGroupBy.EMPID){
+                        return event.getEmpId();
+                        //any other case just groupBy empID
+                    }else{return event.getEmpId();}
+
+                }
+                ));
+        return res;
+    }
+
+    @Override
     public Map<Month, List<Event>> amountExpenditure() {
         Map<Month, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(eventType.SALARY) ||
-                                emp.getEvent().equals(eventType.BONUS) ||
-                                emp.getEvent().equals(eventType.REIMBURSEMENT)
+                .filter(emp -> emp.getEvent().equals(EventType.SALARY) ||
+                                emp.getEvent().equals(EventType.BONUS) ||
+                                emp.getEvent().equals(EventType.REIMBURSEMENT)
                         )
                 .collect(Collectors.groupingBy(event -> event.getEventDate().getMonth()));
 
         return res;
 
+    }
+
+    @Override
+    public Map<String, List<Event>> events(GroupBy groupBy) {
+        Map<String, List<Event>> res = events.stream()
+                .collect(Collectors.groupingBy(event -> String.valueOf(event.getEventDate().getYear())));
+
+        return res;
     }
 
     public Employee findEmployeeById(String empId){
