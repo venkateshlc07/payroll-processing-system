@@ -4,21 +4,19 @@ This is a simple payroll processing system implemented in Java. It allows storin
 
 ## **Features:**
 
-1.Store employee records from a CSV file
 
-2.Retrieve employee count
+* Store employee records from a CSV file
+* Retrieve employee count
+* Find employees by event type (onboarding, salary, bonus, etc.)
+* Calculate total salaries by month or year.
+* Generate financial reports based on employee salary history.
+* Handle payroll events like salary, bonus, reimbursement, and exit.
+* No external database used (in-memory storage).
 
-3.Find employees by event type (onboarding, salary, bonus, etc.)
 
-4.Calculate total salaries by month or year
-
-5.Generate financial reports based on employee salary history
-
-6.Handle payroll events like salary, bonus, reimbursement, and exit
-
-7.No external database used (in-memory storage)
 
 **Prerequisites:**
+
 Java 8 or later
 Maven (optional for building)
 
