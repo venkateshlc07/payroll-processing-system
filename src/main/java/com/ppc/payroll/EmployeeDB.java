@@ -5,14 +5,12 @@ import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class EmployeeDB implements EmployeeRepository {
-    private List<Employee> employees;
-    private List<Event> events;
+    private final List<Employee> employees;
+    private final List<Event> events;
     public EmployeeDB(){
 
         employees = new ArrayList<>();
@@ -21,8 +19,6 @@ public class EmployeeDB implements EmployeeRepository {
 
     @Override
     public void store(String[] record) {
-        System.out.println(Arrays.toString(record));
-
         Event event = new Event();
 
         if(!findEmployeeExistsById(record[1].trim())) {
@@ -151,15 +147,6 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
-    public Map<Month, List<Event>> computeSalaryReport() {
-        Map<Month, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(EventType.SALARY))
-                .collect(Collectors.groupingBy(event -> event.getEventDate().getMonth()));
-
-        return res;
-    }
-
-    @Override
     public Map<String, List<Event>> findTotalSalaryBy(Set<EventType> eventType, GroupBy groupBy) {
 
         Map<String, List<Event>> res = events.stream()
@@ -179,16 +166,6 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
-    public Map<String, List<Event>> financialReport() {
-        Map<String, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(EventType.SALARY))
-                .collect(Collectors.groupingBy(event -> event.getEmpId()));
-
-        return res;
-
-    }
-
-    @Override
     public Map<String, List<Event>> findTotalSalaryBy(Set<EventType> eventType, EmployeeGroupBy employeeGroupBy) {
         Map<String, List<Event>> res = events.stream()
                 .filter(event -> eventType.contains(event.getEvent()))
@@ -203,18 +180,6 @@ public class EmployeeDB implements EmployeeRepository {
         return res;
     }
 
-    @Override
-    public Map<Month, List<Event>> amountExpenditure() {
-        Map<Month, List<Event>> res = events.stream()
-                .filter(emp -> emp.getEvent().equals(EventType.SALARY) ||
-                                emp.getEvent().equals(EventType.BONUS) ||
-                                emp.getEvent().equals(EventType.REIMBURSEMENT)
-                        )
-                .collect(Collectors.groupingBy(event -> event.getEventDate().getMonth()));
-
-        return res;
-
-    }
 
     @Override
     public Map<String, List<Event>> events(GroupBy groupBy) {
@@ -246,9 +211,4 @@ public class EmployeeDB implements EmployeeRepository {
        return employees.stream().count();
     }
 
-    @Override
-    public void print(){
-       System.out.println(employees);
-        System.out.println(events);
-    }
 }

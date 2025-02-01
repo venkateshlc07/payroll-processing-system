@@ -9,6 +9,14 @@ public class EmployeeSalarySummary {
         this.totalEmployees = totalEmployees;
     }
 
+    public long getTotalSalary() {
+        return totalSalary;
+    }
+
+    public long getTotalEmployees() {
+        return totalEmployees;
+    }
+
     @Override
     public String toString() {
         return "EmployeeSalarySummary{" +
