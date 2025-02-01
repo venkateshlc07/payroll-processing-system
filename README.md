@@ -25,10 +25,12 @@ Maven (optional for building)
 **Running the Application:**
 
 Clone the repository:
-
+```
 git clone https://github.com/yourusername/payroll-system.git
 
 cd payroll-system
+```
+
 
 
 **Sample Employee Data (CSV)**
