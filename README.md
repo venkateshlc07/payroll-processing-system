@@ -54,7 +54,8 @@ Example format of employees.csv:
 8, emp101, EXIT, 11-11-2022, 11-11-2022, “Bill Left”
 ````
 
-**Key Classes**
+### **Key Classes**
+
 **EmployeeDB:** Stores and processes employee records in memory.
 
 **EmployeeBrowser:** Provides behaviours to query employees by event type etc. and generate reports. (Aggregations)
