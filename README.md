@@ -34,7 +34,8 @@ cd payroll-system
 **Sample Employee Data (CSV)**
 
 Example format of employees.csv:
-`1, emp101, Bill, Gates, Software Engineer, ONBOARD, 1-11-2022, 10-10-2022, “Bill Gates is going to join DataOrb on 1st November as a SE.”
+```
+1, emp101, Bill, Gates, Software Engineer, ONBOARD, 1-11-2022, 10-10-2022, “Bill Gates is going to join DataOrb on 1st November as a SE.”
 
 2, emp102, Steve, Jobs, Architect, ONBOARD, 1-10-2022, 10-10-2022, “Steve Jobs joined DataOrb on 1st October as an Architect.”
 
@@ -50,7 +51,8 @@ Example format of employees.csv:
 
 7, emp102, EXIT, 10-10-2022, 10-10-2022, “Steve Left”
 
-8, emp101, EXIT, 11-11-2022, 11-11-2022, “Bill Left”`
+8, emp101, EXIT, 11-11-2022, 11-11-2022, “Bill Left”
+````
 
 **Key Classes**
 **EmployeeDB:** Stores and processes employee records in memory.
