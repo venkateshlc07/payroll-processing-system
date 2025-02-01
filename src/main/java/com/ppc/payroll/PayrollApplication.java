@@ -16,7 +16,7 @@ public class PayrollApplication {
 
 		PayRollDataReader payRollDataReader = new PayRollDataReader("Employee_details.txt");
 		List<String> records = payRollDataReader.read();
-		System.out.println(records);
+		//System.out.println(records);
 
 		EmployeeRepository dbRepository = new EmployeeDB();
  		PayrollFormat payrollFormat = new PayrollFormat(dbRepository);
@@ -25,10 +25,11 @@ public class PayrollApplication {
 		EmployeeBrowser browser = new EmployeeBrowser(dbRepository);
 		Map<String, EmployeeSalarySummary> computeSalaryReport = browser.findTotalSalaryBy(Set.of(EventType.SALARY), MONTH);
 
-		System.out.println(computeSalaryReport);
+		//System.out.println(computeSalaryReport);
 
-		System.out.println(browser.findTotalExpenditure(Set.of(EventType.SALARY,EventType.REIMBURSEMENT,EventType.BONUS), GroupBy.MONTH));
+		//System.out.println(browser.findTotalExpenditure(Set.of(EventType.SALARY,EventType.REIMBURSEMENT,EventType.BONUS), GroupBy.MONTH));
 
+		System.out.println(browser.events(GroupBy.YEAR));
 	}
 
 }

@@ -107,6 +107,10 @@ public class EmployeeBrowser {
 
     }
 
+    Map<String, List<Event>> events(GroupBy groupBy){
+       return employeeRepository.events(groupBy);
+    }
+
 }
 
 

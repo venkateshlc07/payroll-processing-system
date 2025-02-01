@@ -5,24 +5,17 @@ import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.ppc.payroll.EventType.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 
-
+import static com.ppc.payroll.EventType.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class PayrollApplicationTests {
 	@Mock
@@ -36,95 +29,70 @@ class PayrollApplicationTests {
 		MockitoAnnotations.openMocks(this);
 	}
 
+	// Helper method to create an Employee
+	private Employee createEmployee(String empId, String firstName, String lastName) {
+		Employee employee = new Employee();
+		employee.setEmpId(empId);
+		employee.setfName(firstName);
+		employee.setlName(lastName);
+		return employee;
+	}
+
+	// Helper method to create an Event
+	private Event createEvent(String empId, EventType eventType, int year, Month month, int day, int salary) {
+		Event event = new Event();
+		event.setEmpId(empId);
+		event.setEvent(eventType);
+		event.setSalary(salary);
+		event.setEventDate(LocalDate.of(year, month, day));
+		return event;
+	}
+
 	@Test
 	void testFindEmployeesJoined() {
-		// Arrange
-		Map<String, List<Event>> mockJoinedMap = new HashMap<>();
-		List<Event> events = new ArrayList<>();
-		Event event = new Event();
-		event.setEmpId("E123");
-		event.setEvent(ONBOARD);
-		event.setDoj(LocalDate.of(2024, Month.JANUARY, 10));
-		events.add(event);
-		mockJoinedMap.put(event.getDoj().getMonth().toString(), events);
+		Event event = createEvent("E123", ONBOARD, 2024, Month.JANUARY, 10, 0);
+		Employee employee = createEmployee("E123", "John", "Doe");
 
-		Employee employee = new Employee();
-		employee.setEmpId("E123");
-		employee.setfName("John");
-		employee.setlName("Doe");
+		Map<String, List<Event>> mockJoinedMap = Map.of(event.getEventDate().getMonth().toString(), List.of(event));
 
 		when(employeeRepository.findEmployeesBy(ONBOARD, GroupBy.MONTH)).thenReturn(mockJoinedMap);
 		when(employeeRepository.findEmployeeById("E123")).thenReturn(employee);
 
-		// Act
 		Map<String, List<EmployeeDTO>> result = employeeBrowser.findEmployeesBy(ONBOARD, GroupBy.MONTH);
 
-		// Assert
 		assertEquals(1, result.size());
 		assertTrue(result.containsKey("JANUARY"));
-        assertEquals("E123", result.get("JANUARY").get(0).getEmpId());
+		assertEquals("E123", result.get("JANUARY").get(0).getEmpId());
 	}
 
 	@Test
 	void testFindEmployeesExited() {
-		// Arrange
-		Map<String, List<Event>> mockJoinedMap = new HashMap<>();
-		List<Event> events = new ArrayList<>();
-		Event event = new Event();
-		event.setEmpId("E123");
-		event.setEvent(EXIT);
-		event.setDol(LocalDate.of(2024, Month.OCTOBER, 10));
-		events.add(event);
-		mockJoinedMap.put(event.getDol().getMonth().toString(), events);
+		Event event = createEvent("E123", EXIT, 2024, Month.OCTOBER, 10, 0);
+		Employee employee = createEmployee("E123", "John", "Doe");
 
-		Employee employee = new Employee();
-		employee.setEmpId("E123");
-		employee.setfName("John");
-		employee.setlName("Doe");
+		Map<String, List<Event>> mockExitedMap = Map.of(event.getEventDate().getMonth().toString(), List.of(event));
 
-		when(employeeRepository.findEmployeesBy(EXIT, GroupBy.MONTH)).thenReturn(mockJoinedMap);
+		when(employeeRepository.findEmployeesBy(EXIT, GroupBy.MONTH)).thenReturn(mockExitedMap);
 		when(employeeRepository.findEmployeeById("E123")).thenReturn(employee);
 
-		// Act
 		Map<String, List<EmployeeDTO>> result = employeeBrowser.findEmployeesBy(EXIT, GroupBy.MONTH);
 
-		// Assert
 		assertEquals(1, result.size());
 		assertTrue(result.containsKey("OCTOBER"));
 		assertEquals("E123", result.get("OCTOBER").get(0).getEmpId());
 	}
 
 	@Test
-	void testMonthlySalaryReport(){
-		Map<String, List<Event>> mockJoinedMap = new HashMap<>();
+	void testMonthlySalaryReport() {
+		Event event1 = createEvent("E123", SALARY, 2024, Month.FEBRUARY, 10, 4000);
+		Event event2 = createEvent("E124", SALARY, 2024, Month.JANUARY, 11, 5000);
+		Event event3 = createEvent("E125", SALARY, 2024, Month.JANUARY, 11, 1000);
 
-		List<Event> events = new ArrayList<>();
-		Event event = new Event();
-		event.setEmpId("E123");
-		event.setEvent(SALARY);
-		event.setSalary(4000);
-		event.setEventDate(LocalDate.of(2024, Month.FEBRUARY, 10));
-		events.add(event);
-		mockJoinedMap.put(event.getEventDate().getMonth().toString(), events);
+		Map<String, List<Event>> mockSalaryMap = new HashMap<>();
+		mockSalaryMap.put("FEBRUARY", List.of(event1));
+		mockSalaryMap.put("JANUARY", Arrays.asList(event2, event3));
 
-		List<Event> events2 = new ArrayList<>();
-		Event event2 = new Event();
-		event2.setEmpId("E124");
-		event2.setEvent(SALARY);
-		event2.setSalary(5000);
-		event2.setEventDate(LocalDate.of(2024, Month.JANUARY, 11));
-		events2.add(event2);
-		mockJoinedMap.put(event2.getEventDate().getMonth().toString(), events2);
-
-		Event event3 = new Event();
-		event3.setEmpId("E125");
-		event3.setEvent(SALARY);
-		event3.setSalary(1000);
-		event3.setEventDate(LocalDate.of(2024, Month.JANUARY, 11));
-
-		mockJoinedMap.get(event3.getEventDate().getMonth().toString()).add(event3);
-
-		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY), GroupBy.MONTH)).thenReturn(mockJoinedMap);
+		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY), GroupBy.MONTH)).thenReturn(mockSalaryMap);
 
 		Map<String, EmployeeSalarySummary> result = employeeBrowser.findTotalSalaryBy(Set.of(SALARY), GroupBy.MONTH);
 
@@ -135,46 +103,18 @@ class PayrollApplicationTests {
 
 	@Test
 	void testEmployeeSalaryReport() {
-		Map<String, List<Event>> mockJoinedMap = new HashMap<>();
+		Event event1 = createEvent("emp101", SALARY, 2024, Month.FEBRUARY, 10, 4000);
+		Event event2 = createEvent("emp102", SALARY, 2024, Month.JANUARY, 10, 5000);
+		Event event3 = createEvent("emp102", SALARY, 2024, Month.MARCH, 10, 5000);
 
-		List<Event> events = new ArrayList<>();
-		Employee employee1 = new Employee();
-		employee1.setEmpId("emp101");
-		employee1.setfName("Bill");
-		employee1.setlName("Gates");
+		Map<String, List<Event>> mockSalaryMap = new HashMap<>();
+		mockSalaryMap.put("emp101", List.of(event1));
+		mockSalaryMap.put("emp102", List.of(event2, event3));
 
-		Event event = new Event();
-		event.setEmpId("emp101");
-		event.setEvent(SALARY);
-		event.setSalary(4000);
-		event.setEventDate(LocalDate.of(2024, Month.FEBRUARY, 10));
-		events.add(event);
-		mockJoinedMap.put(event.getEmpId(), events);
+		Employee employee1 = createEmployee("emp101", "Bill", "Gates");
+		Employee employee2 = createEmployee("emp102", "Steve", "Jobs");
 
-		List<Event> events2 = new ArrayList<>();
-		Employee employee2 = new Employee();
-		employee2.setEmpId("emp102");
-		employee2.setfName("Steve");
-		employee2.setlName("Jobs");
-
-		Event event2 = new Event();
-		event2.setEmpId("emp102");
-		event2.setEvent(SALARY);
-		event2.setSalary(5000);
-		event2.setEventDate(LocalDate.of(2024, Month.JANUARY, 10));
-		events2.add(event2);
-
-
-		Event event3 = new Event();
-		event3.setEmpId("emp102");
-		event3.setEvent(SALARY);
-		event3.setSalary(5000);
-		event3.setEventDate(LocalDate.of(2024, Month.MARCH, 10));
-		events2.add(event3);
-		mockJoinedMap.put(event2.getEmpId(), events2);
-
-
-		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY), EmployeeGroupBy.EMPID)).thenReturn(mockJoinedMap);
+		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY), EmployeeGroupBy.EMPID)).thenReturn(mockSalaryMap);
 		when(employeeRepository.findEmployeeById("emp101")).thenReturn(employee1);
 		when(employeeRepository.findEmployeeById("emp102")).thenReturn(employee2);
 
@@ -182,57 +122,41 @@ class PayrollApplicationTests {
 
 		assertEquals(2, employeeFinancialReports.size());
 		assertEquals(10000L, employeeFinancialReports.stream()
-				.filter(emp -> emp.getEmpId().equals("emp102"))  // Filter employees with empId "emp102"
-				.mapToLong(EmployeeFinancialReport::getTotalAmountPaid)  // Extract total amount paid
+				.filter(emp -> emp.getEmpId().equals("emp102"))
+				.mapToLong(EmployeeFinancialReport::getTotalAmountPaid)
 				.findFirst().getAsLong()
 		);
-
-
 	}
 
 	@Test
 	void testEmployeeTotalExpenditureMonthly() {
-		Map<String, List<Event>> mockJoinedMap = new HashMap<>();
+		Event salaryEvent = createEvent("emp101", SALARY, 2024, Month.FEBRUARY, 10, 4000);
+		Event bonusEvent = createEvent("emp101", BONUS, 2024, Month.FEBRUARY, 25, 1000);
+		Event reimbursementEvent = createEvent("emp101", REIMBURSEMENT, 2024, Month.FEBRUARY, 27, 1000);
 
-		List<Event> events = new ArrayList<>();
-		Employee employee1 = new Employee();
-		employee1.setEmpId("emp101");
-		employee1.setfName("Bill");
-		employee1.setlName("Gates");
+		Map<String, List<Event>> mockExpenditureMap = Map.of("FEBRUARY", List.of(salaryEvent, bonusEvent, reimbursementEvent));
 
-		Event event = new Event();
-		event.setEmpId("emp101");
-		event.setEvent(SALARY);
-		event.setSalary(4000);
-		event.setEventDate(LocalDate.of(2024, Month.FEBRUARY, 10));
-		events.add(event);
+		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY, BONUS), GroupBy.MONTH)).thenReturn(mockExpenditureMap);
 
-		Event eventBill = new Event();
-		eventBill.setEmpId("emp101");
-		eventBill.setEvent(BONUS);
-		eventBill.setSalary(1000);
-		eventBill.setEventDate(LocalDate.of(2024, Month.FEBRUARY, 25));
-		events.add(eventBill);
+		Map<String, EmployeeSalarySummary> result = employeeBrowser.findTotalExpenditure(Set.of(SALARY, BONUS), GroupBy.MONTH);
 
-		Event reimbBill = new Event();
-		reimbBill.setEmpId("emp101");
-		reimbBill.setEvent(REIMBURSEMENT);
-		reimbBill.setSalary(1000);
-		reimbBill.setEventDate(LocalDate.of(2024, Month.FEBRUARY, 27));
-		events.add(reimbBill);
-
-		mockJoinedMap.put(eventBill.getEventDate().getMonth().toString(), events);
-
-		when(employeeRepository.findTotalSalaryBy(Set.of(SALARY, BONUS), GroupBy.MONTH)).thenReturn(mockJoinedMap);
-
-		Map<String, EmployeeSalarySummary> employeeSalarySummaryMap = employeeBrowser.findTotalExpenditure(Set.of(SALARY, BONUS), GroupBy.MONTH);
-
-		assertEquals(1, employeeSalarySummaryMap.size());
-		assertEquals(6000, employeeSalarySummaryMap.get("FEBRUARY").getTotalSalary());
-
+		assertEquals(1, result.size());
+		assertEquals(6000, result.get("FEBRUARY").getTotalSalary());
 	}
 
+	@Test
+	void testEmployeeFinancialEventsReport() {
+		Event bonusEvent = createEvent("emp101", BONUS, 2024, Month.FEBRUARY, 25, 1000);
+		Event reimbursementEvent = createEvent("emp101", REIMBURSEMENT, 2024, Month.FEBRUARY, 27, 1000);
 
+		Map<String, List<Event>> financialReport = Map.of("2024", List.of(bonusEvent, reimbursementEvent));
 
+		when(employeeRepository.events(GroupBy.YEAR)).thenReturn(financialReport);
+
+		Map<String, List<Event>> result = employeeBrowser.events(GroupBy.YEAR);
+
+		assertEquals(1, result.size());
+		assertEquals("emp101", financialReport.get("2024").get(0).getEmpId());
+
+	}
 }
-

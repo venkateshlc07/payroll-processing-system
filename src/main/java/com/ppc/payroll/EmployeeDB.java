@@ -20,110 +20,70 @@ public class EmployeeDB implements EmployeeRepository {
     }
 
     @Override
-    public void store(String[] record) {
+    public void store(String[] record){
+       String empId = record[1];
+
+       if(record[5].trim().equals(EventType.ONBOARD.toString())){
+           Event ev = createEvent(record, true);
+           events.add(ev);
+           employees.add(createEmployee(record));
+       }else{
+           Event ev = createEvent(record, false);
+           events.add(ev);
+       }
+
+    }
+
+    private Event createEvent(String[] record, boolean isNewEmployee) {
         Event event = new Event();
+        int eventTypeIndex = isNewEmployee ? 5 : 2;
+        int eventDataIndex = isNewEmployee ? 6 : 3;
+        int eventDateIndex = isNewEmployee ? 7 : 4;
+        int notesIndex = isNewEmployee ? 8 : 5;
 
-        if(!findEmployeeExistsById(record[1].trim())) {
-            Employee employee = new Employee();
-            employee.setSequenceNo(Integer.parseInt(record[0].trim()));
-            employee.setEmpId(record[1].trim());
-            employee.setfName(record[2].trim());
-            employee.setlName(record[3].trim());
-            employee.setDesignation(record[4].trim());
+        event.setEmpId(record[1].trim());
+        event.setEvent(EventType.valueOf(record[eventTypeIndex].trim()));
 
-            event.setEmpId(record[1].trim());
-            if (record[5].trim().equals(EventType.ONBOARD.toString())) {
-                event.setEvent(EventType.ONBOARD);
-                String[] date = record[6].trim().split("-");
-
-                event.setDoj(LocalDate.of(
-                        Integer.parseInt(date[2]), // Year
-                        Integer.parseInt(date[0]), // Month
-                        Integer.parseInt(date[1])  // Day
-                ));
-
-            } else if (record[5].trim().equals(EventType.BONUS.toString())) {
-                event.setEvent(EventType.BONUS);
-                event.setBonus(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(EventType.REIMBURSEMENT.toString())) {
-                event.setEvent(EventType.REIMBURSEMENT);
-                event.setReimbursement(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(EventType.EXIT.toString())) {
-                event.setEvent(EventType.EXIT);
-                String[] date = record[6].trim().split("-");
-
-                event.setDol(LocalDate.of(
-                        Integer.parseInt(date[2]), // Year
-                        Integer.parseInt(date[0]), // Month
-                        Integer.parseInt(date[1])  // Day
-                ));
-
-            } else if (record[5].trim().equals(EventType.BONUS.toString())) {
-                event.setEvent(EventType.BONUS);
-                event.setBonus(Integer.parseInt(record[6].trim()));
-            } else if (record[5].trim().equals(EventType.SALARY.toString())) {
-                event.setEvent(EventType.SALARY);
-                event.setSalary(Integer.parseInt(record[6].trim()));
-            }
-            String[] date = record[7].trim().split("-");
-
-            event.setEventDate(LocalDate.of(
-                    Integer.parseInt(date[2]), // Year
-                    Integer.parseInt(date[0]), // Month
-                    Integer.parseInt(date[1])  // Day
-            ));
-
-            event.setNotes(record[8].trim());
-            employees.add(employee);
-            //for quick lookup
-            empLookup.put(employee.getEmpId(), employee);
-
-
-        }else {
-            event.setEmpId(record[1].trim());
-            if (record[2].trim().equals(EventType.ONBOARD.toString())) {
-                event.setEvent(EventType.ONBOARD);
-                String[] date = record[3].trim().split("-");
-
-                event.setDoj(LocalDate.of(
-                        Integer.parseInt(date[2]), // Year
-                        Integer.parseInt(date[0]), // Month
-                        Integer.parseInt(date[1])  // Day
-                ));
-
-            } else if (record[2].trim().equals(EventType.REIMBURSEMENT.toString())) {
-                event.setEvent(EventType.REIMBURSEMENT);
-                event.setReimbursement(Integer.parseInt(record[3].trim()));
-            } else if (record[2].trim().equals(EventType.EXIT.toString())) {
-                event.setEvent(EventType.EXIT);
-                String[] date = record[3].trim().split("-");
-
-                event.setDol(LocalDate.of(
-                        Integer.parseInt(date[2]), // Year
-                        Integer.parseInt(date[0]), // Month
-                        Integer.parseInt(date[1])  // Day
-                ));
-
-            } else if (record[2].trim().equals(EventType.BONUS.toString())) {
-                event.setEvent(EventType.BONUS);
-                event.setBonus(Integer.parseInt(record[3].trim()));
-            } else if (record[2].trim().equals(EventType.SALARY.toString())) {
-                event.setEvent(EventType.SALARY);
-                event.setSalary(Integer.parseInt(record[3].trim()));
-            }
-            String[] date = record[4].trim().split("-");
-
-            event.setEventDate(LocalDate.of(
-                    Integer.parseInt(date[2]), // Year
-                    Integer.parseInt(date[0]), // Month
-                    Integer.parseInt(date[1])  // Day
-            ));
-
-            event.setNotes(record[5].trim());
+        switch (event.getEvent()) {
+            case ONBOARD:
+                event.setDoj(parseDate(record[eventDataIndex].trim()));
+                break;
+            case BONUS:
+                event.setBonus(Integer.parseInt(record[eventDataIndex].trim()));
+                break;
+            case REIMBURSEMENT:
+                event.setReimbursement(Integer.parseInt(record[eventDataIndex].trim()));
+                break;
+            case EXIT:
+                event.setDol(parseDate(record[eventDataIndex].trim()));
+                break;
+            case SALARY:
+                event.setSalary(Integer.parseInt(record[eventDataIndex].trim()));
+                break;
         }
 
-            events.add(event);
+        event.setEventDate(parseDate(record[eventDateIndex].trim()));
+        event.setNotes(record[notesIndex].trim());
+        return event;
+    }
 
+    private LocalDate parseDate(String dateStr) {
+        String[] dateParts = dateStr.split("-");
+        return LocalDate.of(
+                Integer.parseInt(dateParts[2]),  // Year
+                Integer.parseInt(dateParts[0]),  // Month
+                Integer.parseInt(dateParts[1])   // Day
+        );
+    }
+
+    private Employee createEmployee(String[] record) {
+        Employee employee = new Employee();
+        employee.setSequenceNo(Integer.parseInt(record[0].trim()));
+        employee.setEmpId(record[1].trim());
+        employee.setfName(record[2].trim());
+        employee.setlName(record[3].trim());
+        employee.setDesignation(record[4].trim());
+        return employee;
     }
 
     @Override
@@ -187,6 +147,7 @@ public class EmployeeDB implements EmployeeRepository {
 
     @Override
     public Map<String, List<Event>> events(GroupBy groupBy) {
+        System.out.println(events);
         Map<String, List<Event>> res = events.stream()
                 .collect(Collectors.groupingBy(event -> String.valueOf(event.getEventDate().getYear())));
 
@@ -197,9 +158,7 @@ public class EmployeeDB implements EmployeeRepository {
         return empLookup.get(empId);
     }
 
-    public boolean findEmployeeExistsById(String empId) {
-        return employees.contains(empId);
-    }
+
 
     public long employeesCount(){
        return employees.stream().count();

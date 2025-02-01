@@ -22,7 +22,7 @@ public class PayRollDataReader {
                 lines.add(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error reading file: " + e.getMessage());
         }
         return lines;
     }
