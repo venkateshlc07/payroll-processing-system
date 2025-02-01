@@ -230,7 +230,6 @@ class PayrollApplicationTests {
 		assertEquals(1, employeeSalarySummaryMap.size());
 		assertEquals(6000, employeeSalarySummaryMap.get("FEBRUARY").getTotalSalary());
 
-
 	}
 
 

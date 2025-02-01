@@ -11,10 +11,12 @@ import java.util.stream.Collectors;
 public class EmployeeDB implements EmployeeRepository {
     private final List<Employee> employees;
     private final List<Event> events;
+    private final Map<String, Employee> empLookup;
     public EmployeeDB(){
 
         employees = new ArrayList<>();
         events = new ArrayList<>();
+        empLookup = new HashMap<>();
     }
 
     @Override
@@ -73,6 +75,8 @@ public class EmployeeDB implements EmployeeRepository {
 
             event.setNotes(record[8].trim());
             employees.add(employee);
+            //for quick lookup
+            empLookup.put(employee.getEmpId(), employee);
 
 
         }else {
@@ -189,22 +193,12 @@ public class EmployeeDB implements EmployeeRepository {
         return res;
     }
 
-    public Employee findEmployeeById(String empId){
-        for(Employee emp: employees){
-            if(emp.getEmpId().equals(empId))
-                return emp;
-        }
-
-        return null;
+    public Employee findEmployeeById(String empId) {
+        return empLookup.get(empId);
     }
 
-    public boolean findEmployeeExistsById(String empId){
-        for(Employee emp: employees){
-            if(emp.getEmpId().equals(empId))
-                return true;
-        }
-
-        return false;
+    public boolean findEmployeeExistsById(String empId) {
+        return employees.contains(empId);
     }
 
     public long employeesCount(){
