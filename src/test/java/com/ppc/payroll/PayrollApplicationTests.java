@@ -17,6 +17,26 @@ import static com.ppc.payroll.EventType.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the Payroll application.
+ *
+ * <p>This test class verifies the functionality of employee salary calculations,
+ * event tracking, and payroll-related queries.</p>
+ *
+ * <p>It includes tests for:</p>
+ * <ul>
+ *     <li>Finding employees by event types (e.g., onboarding, exit)</li>
+ *     <li>Generating salary reports grouped by different criteria (e.g., month, employee ID)</li>
+ *     <li>Validating financial transactions such as bonuses, reimbursements, and salaries</li>
+ *     <li>Ensuring correct aggregation of payroll-related data</li>
+ * </ul>
+ *
+ * <p>Mocks are used to simulate database interactions via {@link EmployeeRepository}.</p>
+ *
+ * @author Venkatesh Chakravarti
+ * @version 1.0
+ *
+ */
 class PayrollApplicationTests {
 	@Mock
 	private EmployeeRepository employeeRepository;
@@ -46,6 +66,15 @@ class PayrollApplicationTests {
 		event.setSalary(salary);
 		event.setEventDate(LocalDate.of(year, month, day));
 		return event;
+	}
+
+	@Test
+	void testFindEmployeesCount() {
+		when(employeeRepository.employeeCount()).thenReturn(5L);
+
+		long count = employeeBrowser.employeeCount();
+
+		assertEquals(5L, count);
 	}
 
 	@Test

@@ -7,6 +7,24 @@ import com.ppc.payroll.utils.GroupBy;
 import com.ppc.payroll.utils.EmployeeGroupBy;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit test class for {@link EmployeeDB}.
+ * This class tests various functionalities such as storing employees, retrieving employee records,
+ * and calculating salaries based on events.
+ *
+ * <p>Tests include:
+ * <ul>
+ *     <li>Storing new employees</li>
+ *     <li>Handling events for existing employees</li>
+ *     <li>Finding employees by event type</li>
+ *     <li>Calculating total salaries grouped by time periods</li>
+ *     <li>Retrieving all employees</li>
+ * </ul>
+ * </p>
+ *
+ * @author Venkatesh Chakravarti
+ * @version 1.0
+ */
 class EmployeeDBTest {
     private EmployeeDB employeeDB;
 
