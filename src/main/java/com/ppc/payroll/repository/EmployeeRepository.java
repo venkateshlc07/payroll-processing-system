@@ -5,11 +5,13 @@ import com.ppc.payroll.Event;
 import com.ppc.payroll.EventType;
 import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Repository
 public interface EmployeeRepository {
     void store(String[] record);
     long employeeCount();

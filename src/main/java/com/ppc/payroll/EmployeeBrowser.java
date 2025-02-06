@@ -3,6 +3,8 @@ package com.ppc.payroll;
 import com.ppc.payroll.repository.EmployeeRepository;
 import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 

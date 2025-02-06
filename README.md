@@ -22,11 +22,11 @@ Maven (optional for building)
 
 **Running the Application:**
 
-Clone the repository:
+Fork & Clone the repository:
 ```
 git clone https://github.com/yourusername/payroll-system.git
 
-cd payroll-system
+
 ```
 
 

@@ -3,11 +3,13 @@ package com.ppc.payroll;
 import com.ppc.payroll.repository.EmployeeRepository;
 import com.ppc.payroll.utils.EmployeeGroupBy;
 import com.ppc.payroll.utils.GroupBy;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
 public class EmployeeDB implements EmployeeRepository {
     private final List<Employee> employees;
     private final List<Event> events;
